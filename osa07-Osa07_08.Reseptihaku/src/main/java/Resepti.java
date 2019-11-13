@@ -13,14 +13,13 @@ import java.util.Scanner;
  * @author tao-s
  */
 public class Resepti {
-    private final HashMap<String, Integer>resepti;
-    private String tiedosto;
-    public Resepti(String tiedosto){
-        this.resepti = new HashMap<>();
-        this.tiedosto = tiedosto;
+    private final HashMap<String, Integer>yes1;
+    private final Haku haku0 = new Haku();
+    public Resepti(){
+        this.yes1 = new HashMap<>();
     }
     public void tiedostolukeminen(String tiedosto){
-        try (Scanner tiedostonLukija = new Scanner(new File(this.tiedosto))) {
+        try (Scanner tiedostonLukija = new Scanner(new File(tiedosto))) {
             String sana1 = "";
             int luku1 = 0;
             while (tiedostonLukija.hasNextLine()) {
@@ -33,70 +32,55 @@ public class Resepti {
                     luku1 = Integer.valueOf(rivi);
                 }
                 if(!sana1.equals(null) && luku1 != 0){
-                    this.resepti.put(sana1, luku1);
+                    this.yes1.putIfAbsent(sana1, luku1);
                 }
             }
-            if(resepti.get("Lettutaikina") != 60){
-                this.resepti.replace("Lettutaikina", resepti.get("Lettitaikina"), 60);
+            if(yes1.get("Lettutaikina") != 60){
+                this.yes1.replace("Lettutaikina", yes1.get("Lettitaikina"), 60);
             }
-            if(resepti.get("Lihapullat") != 20){
-                this.resepti.replace("Lihapullat", resepti.get("Lihapullat"), 20);
+            if(yes1.get("Lihapullat") != 20){
+                this.yes1.replace("Lihapullat", yes1.get("Lihapullat"), 20);
             }
-            if(resepti.get("Tofurullat") != 30){
-                this.resepti.replace("Tofurullat", resepti.get("Tofurullat"), 30);
+            if(yes1.get("Tofurullat") != 30){
+                this.yes1.replace("Tofurullat", yes1.get("Tofurullat"), 30);
             }
         } catch (Exception e) {
             System.out.println("Virhe: " + e.getMessage());
         }
     }
-    public String toString(String nimi, int luku){
-        return nimi + ", keittoaika: " + luku;
+    public String toString(String nimi){
+        return nimi + ", keittoaika: " + this.yes1.get(nimi);
     }
     public void listaa(){
         System.out.println("Reseptit:");
-        try (Scanner tiedostonLukija = new Scanner(new File(tiedosto))) {
-            String sana1 = "";
-            int luku1 = 0;
-            int indeksi = 0;
-            boolean yes = false;
-                while (tiedostonLukija.hasNextLine() && yes == true) {
-                    String rivi = tiedostonLukija.nextLine();
-                    if(rivi.equals("Lettutaikina")){
-                        sana1 = rivi;
-                    }
-                    if(rivi.equals("60")){
-                        luku1 = Integer.valueOf(rivi);
-                    }
-                        System.out.println(sana1 + ", keittoaika: " + luku1);
-                        yes = true;
-                }
-                yes = false;
-                while (tiedostonLukija.hasNextLine() && yes == true) {
-                    String rivi = tiedostonLukija.nextLine();
-                    if(rivi.equals("Lihapullat")){
-                        sana1 = rivi;
-                    }
-                    if(rivi.equals("20")){
-                        luku1 = Integer.valueOf(rivi);
-                    }
-                        System.out.println(sana1 + ", keittoaika: " + luku1);
-                        yes = true;
-                }
-                yes = false;
-                while (tiedostonLukija.hasNextLine() && yes == true) {
-                    String rivi = tiedostonLukija.nextLine();
-                    if(rivi.equals("Tofurullat")){
-                        sana1 = rivi;
-                    }
-                    if(rivi.equals("30")){
-                        luku1 = Integer.valueOf(rivi);
-                    }
-                        System.out.println(sana1 + ", keittoaika: " + luku1);
-                        yes = true;
-                }
-            
-        } catch (Exception e) {
-            System.out.println("Virhe: " + e.getMessage());
+        for(String listaa: yes1.keySet()){
+            System.out.println(listaa + ", keittoaika: " 
+                    + this.yes1.get(listaa));
         }
+    }
+    public void hae(String haku){
+        System.out.println(" ");
+        System.out.println("Reseptit:");
+        for(String hae: yes1.keySet()){
+            if(hae.contains(haku)){
+               System.out.println(hae + ", keittoaika: " 
+                    + this.yes1.get(hae)); 
+            }
+        }
+    }
+    public void keittoaika(int keittoaika){
+        System.out.println(" ");
+        System.out.println("Reseptit:");
+        for(String aika: yes1.keySet()){
+            if(this.yes1.get(aika) <= keittoaika){
+               System.out.println(aika + ", keittoaika: " 
+                    + this.yes1.get(aika));  
+            }
+        }
+    }
+    public void aineHaku(String hae){
+        this.haku0.aineHaku();
+        System.out.println("Reseptit:");
+        this.haku0.contains(hae);
     }
 }
